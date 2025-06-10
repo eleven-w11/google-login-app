@@ -1,25 +1,13 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import { GoogleOAuthProvider } from "@react-oauth/google";
+import GooGle from "./pages/GooGle";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <GoogleOAuthProvider clientId="680383410681-9ouf6rc4jl852tkf72m04ddipndc1q0n.apps.googleusercontent.com">
+      <GooGle />
+    </GoogleOAuthProvider>
   );
 }
 
-export default App;
+export default App; // ✅ ye line zaroori hai!
