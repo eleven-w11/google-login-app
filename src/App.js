@@ -4,7 +4,7 @@ import GooGle from "./pages/GooGle";
 
 function App() {
   return (
-    <GoogleOAuthProvider clientId="680383410681-9ouf6rc4jl852tkf72m04ddipndc1q0n.apps.googleusercontent.com">
+    <GoogleOAuthProvider clientId="680383410681-***********l852tkf72m04ddipndc1q0n.apps.googleusercontent.com">
       <GooGle />
     </GoogleOAuthProvider>
   );
