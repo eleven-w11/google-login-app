@@ -4,9 +4,9 @@ import GooGle from "./pages/GooGle";
 
 function App() {
   return (
-    <GoogleOAuthProvider clientId="680383410681-***********l852tkf72m04ddipndc1q0n.apps.googleusercontent.com">
+    <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}>
       <GooGle />
-    </GoogleOAuthProvider>
+    </GoogleOAuthProvider >
   );
 }
 
