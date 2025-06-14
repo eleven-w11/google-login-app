@@ -1,38 +1,92 @@
 import React, { useState } from 'react';
-import { GoogleLogin, googleLogout } from '@react-oauth/google';
-import { jwtDecode } from 'jwt-decode';
+import { useNavigate } from 'react-router-dom';
+import { GoogleLogin } from '@react-oauth/google';
+import axios from 'axios';
 
 const GooGle = () => {
     const [user, setUser] = useState(null);
+    const [error, setError] = useState('');
+    const navigate = useNavigate();
 
-    const handleLoginSuccess = (credentialResponse) => {
-        console.log('Credential Response:', credentialResponse);   // ➕ console log
-        const decoded = jwtDecode(credentialResponse.credential);
-        setUser(decoded);
+    //     try {
+    //         const res = await axios.post('http://localhost:5000/api/auth/google', {
+    //             tokenId: credentialResponse.credential
+    //         }, {
+    //             withCredentials: true, // This is crucial
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //                 'Accept': 'application/json'
+    //             }
+    //         });
+
+    //         if (res.data.success) {
+    //             setUser(res.data.user);
+    //             navigate("/UserProfile");
+    //         }
+    //     } catch (error) {
+    //         console.error("Complete error:", {
+    //             message: error.message,
+    //             response: error.response?.data,
+    //             config: error.config
+    //         });
+    //         alert("Login failed. Please check console for details.");
+    //     }
+    // };
+    const handleLoginSuccess = async (credentialResponse) => {
+        try {
+            const res = await axios.post(
+                'http://localhost:5000/api/auth/google',
+                { tokenId: credentialResponse.credential },
+                {
+                    withCredentials: true,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    }
+                }
+            );
+
+            if (res.data.success) {
+                localStorage.setItem('user', JSON.stringify(res.data.user));
+                navigate('/UserProfile');
+            }
+        } catch (error) {
+            console.error('Login Error:', {
+                message: error.message,
+                response: error.response?.data,
+                config: error.config
+            });
+            alert('Login failed. Check console for details.');
+        }
     };
 
     const handleLoginError = () => {
-        console.log('Login failed');
-    };
-
-    const handleLogout = () => {
-        googleLogout();
-        setUser(null);
+        setError("Google login failed. Please try again.");
     };
 
     return (
         <div style={{ textAlign: 'center', marginTop: '4rem' }}>
             <h2>Google Sign‑In Test Page</h2>
+            {error && <p style={{ color: 'red' }}>{error}</p>}
 
             {user ? (
-                <>
-                    <img src={user.picture} alt="profile" style={{ width: 80, borderRadius: '50%' }} />
-                    <p>{user.name}</p>
-                    <p>{user.email}</p>
-                    <button onClick={handleLogout}>Logout</button>
-                </>
+                <div>
+                    <p>Already logged in as {user.name}</p>
+                    <button onClick={() => navigate("/UserProfile")}>
+                        Go to Profile
+                    </button>
+                </div>
             ) : (
-                <GoogleLogin onSuccess={handleLoginSuccess} onError={handleLoginError} />
+                <div>
+                    <h3>Google Login</h3>
+                    <GoogleLogin
+                        onSuccess={handleLoginSuccess}
+                        onError={handleLoginError}
+                        theme="outline"
+                        size="large"
+                        shape="rectangular"
+                    />
+                </div>
             )}
         </div>
     );
